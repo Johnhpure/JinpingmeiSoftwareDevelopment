@@ -1,578 +1,564 @@
-# OpenMOSS
+# 金瓶梅软件开发有限公司
 
-**Self-Organizing Multi-Agent System for OpenClaw**
+**基于 OpenMOSS 的多 AI Agent 互联网产品开发团队**
 
 <p align="center">
-🚀 <a href="#why-openmoss">Why OpenMOSS</a> · 
-🎬 <a href="#-live-demo-1m-reviews">Live Demo</a> · 
-🧩 <a href="#-use-cases">Use Cases</a> · 
-🏗️ <a href="#architecture">Architecture</a> · 
-⚡ <a href="#quick-start">Quick Start</a> · 
-⚙️ <a href="#configuration">Configuration</a> · 
-📡 <a href="#api-docs">API Docs</a> · 
-🗺️ <a href="#roadmap">Roadmap</a>
+🏢 <a href="#一项目简介">项目简介</a> · 
+👥 <a href="#二团队成员">团队成员</a> · 
+🏗️ <a href="#三系统架构">系统架构</a> · 
+🔧 <a href="#四核心增强">核心增强</a> · 
+⚡ <a href="#五快速启动">快速启动</a> · 
+📡 <a href="#六api-文档">API 文档</a> · 
+🧪 <a href="#七验证测试">验证测试</a>
 </p>
 
 <p align="center">
-<a href="https://github.com/openclaw/openclaw"><img src="https://img.shields.io/badge/OpenClaw-Required-blue" alt="OpenClaw"></a>
 <img src="https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white" alt="Python">
 <img src="https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi&logoColor=white" alt="FastAPI">
 <img src="https://img.shields.io/badge/Frontend-Vue%203-4FC08D?logo=vuedotjs&logoColor=white" alt="Vue">
 <img src="https://img.shields.io/badge/Database-SQLite-003B57?logo=sqlite&logoColor=white" alt="SQLite">
-<img src="https://img.shields.io/badge/License-MIT-green" alt="License">
-<img src="https://img.shields.io/badge/Agents-4%20Roles-8b5cf6" alt="Agents">
+<img src="https://img.shields.io/badge/Agents-9名成员-8b5cf6" alt="Agents">
+<img src="https://img.shields.io/badge/角色-4种系统角色-f59e0b" alt="Roles">
 </p>
 
-> **A platform where AI manages AI.** Multiple agents collaborate autonomously — planning, executing, reviewing, and inspecting — while humans just set goals and check results.
-
-OpenMOSS (Multi-agent Orchestration & Self-evolving System) is a self-organizing multi-agent collaboration platform built on [OpenClaw](https://github.com/openclaw/openclaw).
-
-📖 [Live demo & detailed walkthrough (LINUX DO)](https://linux.do/t/topic/1709670) · 🇨🇳 [中文文档](README_CN.md)
-
-![Multiple AI Agents collaborating autonomously](docs/screenshots/agent-collaboration.png)
-
-### ✨ Key Features
-
-- 🤖 **Self-Organizing Collaboration** — Agents wake up via cron, autonomously claim tasks, execute, and submit — no human orchestration needed
-- 🔁 **Closed-Loop Quality Control** — Review + scoring + rework loop ensures every deliverable meets quality standards
-- 🛡️ **Auto Patrol & Recovery** — Patrol agent continuously monitors the system, flags stuck tasks, and triggers recovery — agent "death rate" drops to 0%
-- 🏆 **Scoring & Incentive System** — Agents have scores and leaderboards; review results directly affect rankings, driving output quality
-- 🧩 **Pluggable Skills** — OpenMOSS only handles orchestration; each agent's actual capabilities are determined by the Skills it carries — domain-agnostic
-- 🔄 **Recurring Tasks** — Built-in recurring task type for continuous operations (e.g., daily news collection and publishing)
-- 🔧 **CLI Self-Update** — Agents auto-detect tool updates on wake-up and can update their CLI + Skill prompts with a single command
-- 🖥️ **Built-in WebUI** — Out-of-the-box admin dashboard with task management, activity feed, score leaderboard, and prompt management
+> **一句话概括：** 9 个 AI Agent 组成的互联网产品开发团队，从产品经理到运维，自动协作完成软件开发全流程——人类只需下达需求、看交付。
 
 ---
 
-## Why OpenMOSS?
+## 一、项目简介
 
-In a traditional single-agent setup, the AI works alone — when it hits a problem, it likely "dies" mid-conversation, and the task fails. OpenMOSS introduces multi-agent collaboration where agents **divide responsibilities and back each other up**:
+本项目基于 [OpenMOSS](https://github.com/open-moss/OpenMOSS)（Multi-agent Orchestration & Self-evolving System）二次开发，将原始的通用多 Agent 协作平台定制为一个**互联网产品开发团队**。
 
-- **Planner Agent** — Automatically breaks down requirements, assigns sub-tasks, tracks progress, and delivers results
-- **Executor Agent** — Claims tasks, writes code, and submits deliverables
-- **Reviewer Agent** — Reviews quality, scores work, approves or rejects for rework
-- **Patrol Agent** — Monitors the system, detects anomalies, flags blocked tasks, and sends alerts
+### 核心理念
 
-The entire process requires **zero human intervention**. Agents run autonomously through cron-based wake-ups.
+传统软件开发依赖人类团队协作，沟通成本高、容易出错。本项目用 9 个 AI Agent 模拟一个完整的互联网公司开发团队：
 
-> [!IMPORTANT]
-> OpenMOSS performance is highly dependent on the underlying LLM. Larger context windows yield better results. We recommend GPT-5.3-Codex or GPT-5.4.
+- **总调度** 接收需求并拆解为具体任务
+- **产品经理** 编写 PRD 文档
+- **UI设计师** 输出设计规范
+- **前端/后端/数据库/运维** 各写各的代码
+- **质量审查** 检查每一份交付物
+- **系统巡查** 确保不会有任务卡住
 
-> [!WARNING]
-> Running multiple agents multiplies model token consumption. Set appropriate rate limits to prevent unexpected costs.
+全过程通过 cron 定时唤醒 Agent，**无需人类介入**，Agent 之间通过 API 异步协作。
 
-> [!TIP]
-> For best results, deploy OpenMOSS on a dedicated desktop-grade production environment.
+### 二次开发增强
 
----
+相比原版 OpenMOSS，本项目新增了 **三大代码级增强**，确保任务传递的准确性：
 
-## 🎬 Live Demo: 1M Reviews
-
-[1M Reviews](https://1m-reviews.com/) is an English news site entirely operated by an OpenMOSS multi-agent team. The only human instruction was:
-
-> **Collect AI / tech / digital / automotive news from the Chinese internet, translate to English, and publish to WordPress.**
-
-**Results:**
-
-- 🚀 **20+ articles published in 2 days**, fully autonomous
-- 🔄 Agent team **self-resolved issues** through collaboration, maintaining stable progress
-- 🖼️ When asked to add images, agents autonomously tested the feature in round 10 and applied it to all subsequent tasks
-- 💬 You can @any agent in the group chat anytime to check on progress
-
-🔗 **Try it live:**
-
-- [1M Reviews Website](https://1m-reviews.com/) — Content produced by the agent team
-- [Agent Activity Feed (public)](https://goai.love/feed) — Watch agents work in real-time
+| 增强 | 解决的问题 |
+|------|-----------|
+| **Agent 专业化系统** | 每个 Agent 有明确的 `job_title` 和 `specialties`，系统知道谁能做什么 |
+| **SubTask 分类 & 自动路由** | 子任务带 `category`，系统自动匹配最佳 Agent，杜绝派错人 |
+| **任务上报系统 (Escalation)** | Executor 可结构化上报新需求给 Planner，不会被遗漏 |
 
 ---
 
-## 🧩 Use Cases
+## 二、团队成员
 
-OpenMOSS is a **general-purpose multi-agent orchestration middleware** — it doesn't limit what agents can do. Give your agents the right Prompts and Skills, and they'll collaborate on any task.
+### 完整团队阵容
 
-### ✅ Proven
+| # | 名称 | 系统角色 | 业务岗位 | 任务类别 | 核心职责 |
+|---|------|---------|---------|---------|---------|
+| 1 | **潘金莲** | `planner` | 总调度/BOSS助理 | — | 接收需求、拆解任务、精确分发、处理上报 |
+| 2 | **庞春梅** | `executor` | 产品经理 | `product` | 需求分析、PRD文档、上报UI设计需求 |
+| 3 | **孟玉楼** | `executor` | UI设计师 | `ui_design` | 设计规范、组件样式、页面布局方案 |
+| 4 | **西门庆** | `executor` | 前端开发 | `frontend` | HTML/CSS/JS、组件开发、页面实现 |
+| 5 | **花子虚** | `executor` | 后端开发 | `backend` | API开发、业务逻辑、服务端编码 |
+| 6 | **武大** | `executor` | 数据库开发 | `database` | 表结构设计、SQL优化、数据迁移 |
+| 7 | **玳安** | `executor` | 运维工程师 | `devops` | Docker部署、CI/CD、Nginx配置 |
+| 8 | **应伯爵** | `reviewer` | 质量审查 | — | 审查交付质量、评分(1-5)、批准或驳回 |
+| 9 | **李瓶儿** | `patrol` | 系统巡查 | — | 监控系统、检测异常、标记阻塞、告警 |
 
-| Scenario                        | How It Works                                                                                                                      |
-| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| **Content Production Pipeline** | Collect news → translate/rewrite → review quality → publish to WordPress, running 24/7. [See live demo ↑](#-live-demo-1m-reviews) |
+### 四种系统角色
 
-### 💡 More Possibilities
-
-| Scenario                       | Agent Workflow                                                                                                     |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| **Autonomous Coding**          | Planner breaks down requirements → Executors write code → Reviewer does code review → Patrol monitors build status |
-| **AI Research Assistant**      | Multiple executors search and compile data → Planner summarizes → Reviewer cross-validates                         |
-| **Data Collection & Analysis** | Executors periodically scrape data → clean/analyze → Reviewer validates results → generate reports                 |
-| **Automated Operations**       | Patrol monitors system metrics → detects anomalies and creates fix tasks → Executor resolves → Reviewer confirms   |
-
-> [!NOTE]
-> All scenarios require configuring appropriate Skills for your agents (e.g., web search, code execution, API integration). OpenMOSS handles orchestration; agent capabilities are determined by their Skills.
+| 角色 | 权限 | 人数 |
+|------|------|------|
+| **planner（规划者）** | 创建/分配/取消任务，处理上报 | 1（潘金莲） |
+| **executor（执行者）** | 认领/执行/提交任务，上报需求 | 6（庞春梅、孟玉楼、西门庆、花子虚、武大、玳安） |
+| **reviewer（审查者）** | 审查交付物、评分、通过或驳回 | 1（应伯爵） |
+| **patrol（巡查者）** | 巡检系统、标记阻塞、告警 | 1（李瓶儿） |
 
 ---
 
-## Architecture
+## 三、系统架构
 
-OpenMOSS uses a **middleware architecture**, serving as the coordination layer between OpenClaw and AI agents. All agents communicate asynchronously through the OpenMOSS API — they never talk to each other directly.
+### 技术栈
 
-### Task Lifecycle
+| 层 | 技术 | 说明 |
+|----|------|------|
+| 前端 | Vue 3 + shadcn-vue | WebUI 管理后台 |
+| 后端 | FastAPI (:6565) | RESTful API |
+| 数据库 | SQLite + SQLAlchemy | 11 张表（含新增 escalation 表） |
+| Agent 运行 | OpenClaw | 每个 Agent 通过 cron 定时唤醒运行 |
+
+### 任务生命周期
 
 ```mermaid
 flowchart TD
-    Human["👤 Human Admin<br/>Set project goals"]
-    Planner["🧠 Planner Agent<br/>Break down requirements · Create modules & sub-tasks · Assign agents"]
-    Queue["📋 Sub-task Queue<br/>pending → assigned"]
-    Executor["💻 Executor Agent × N<br/>Claim tasks · Write code · Submit deliverables"]
-    Reviewer["🔍 Reviewer Agent<br/>Review quality · Score · Approve or reject"]
-    Done["✅ Sub-task Complete (done)"]
-    Result["📦 Planner Delivers<br/>Compile results · Notify admin"]
-    Patrol["🛡️ Patrol Agent<br/>Scheduled inspection · Detect anomalies · Alert"]
+    Human["👤 用户<br/>提出开发需求"]
+    PJL["🧠 潘金莲 (Planner)<br/>拆解需求 · 按类别分发"]
+    
+    subgraph Executors["💻 执行者团队"]
+        PCM["庞春梅<br/>产品经理"]
+        MYL["孟玉楼<br/>UI设计师"]
+        XMQ["西门庆<br/>前端开发"]
+        HZX["花子虚<br/>后端开发"]
+        WD["武大<br/>数据库"]
+        DA["玳安<br/>运维"]
+    end
+    
+    YBJ["🔍 应伯爵 (Reviewer)<br/>审查质量 · 评分 · 通过或驳回"]
+    LPE["🛡️ 李瓶儿 (Patrol)<br/>巡检异常 · 告警"]
+    Done["✅ 交付完成"]
 
-    Human -->|Set goals| Planner
-    Planner -->|Create sub-tasks| Queue
-    Queue -->|Cron wake-up · Claim| Executor
-    Executor -->|Submit for review| Reviewer
-    Reviewer -->|✅ Approved| Done
-    Reviewer -->|❌ Rejected| Executor
-    Done -->|All sub-tasks complete| Result
-    Patrol -.->|Flag blocked · Alert| Planner
-
-    style Human fill:#60a5fa,stroke:#3b82f6,color:#fff,rx:12
-    style Planner fill:#818cf8,stroke:#6366f1,color:#fff,rx:12
-    style Queue fill:#94a3b8,stroke:#64748b,color:#fff,rx:12
-    style Executor fill:#38bdf8,stroke:#0ea5e9,color:#fff,rx:12
-    style Reviewer fill:#a78bfa,stroke:#8b5cf6,color:#fff,rx:12
-    style Done fill:#34d399,stroke:#10b981,color:#fff,rx:12
-    style Result fill:#2dd4bf,stroke:#14b8a6,color:#fff,rx:12
-    style Patrol fill:#fbbf24,stroke:#f59e0b,color:#1e293b,rx:12,stroke-dasharray: 5 5
+    Human -->|下达需求| PJL
+    PJL -->|"--category product<br/>--auto-assign"| PCM
+    PJL -->|"--category ui_design<br/>--auto-assign"| MYL
+    PJL -->|"--category frontend<br/>--auto-assign"| XMQ
+    PJL -->|"--category backend<br/>--auto-assign"| HZX
+    PJL -->|"--category database<br/>--auto-assign"| WD
+    PJL -->|"--category devops<br/>--auto-assign"| DA
+    PCM -->|escalate 上报UI需求| PJL
+    Executors -->|提交审查| YBJ
+    YBJ -->|✅ 通过| Done
+    YBJ -->|❌ 驳回| Executors
+    LPE -.--->|标记阻塞 · 告警| PJL
 ```
 
-> **Note:** Each agent is an AI model instance running on [OpenClaw](https://github.com/openclaw/openclaw), woken up by cron, executing its role through the OpenMOSS API — fully autonomous.
+### 任务层级
 
-### Tech Stack
+| 层级 | 说明 | 示例 |
+|------|------|------|
+| **Task（任务）** | 完整的项目目标 | 开发一个电商系统 |
+| **Module（模块）** | 功能拆分 | 用户模块、商品模块、订单模块 |
+| **Sub-Task（子任务）** | 最小执行单元，带 `category` | 设计用户表结构 (database) |
 
-| Layer         | Technology          | Description                                                             |
-| ------------- | ------------------- | ----------------------------------------------------------------------- |
-| Frontend      | Vue 3 + shadcn-vue  | Admin WebUI (Dashboard / Tasks / Activity Feed / Scores)                |
-| Backend       | FastAPI (:6565)     | RESTful API — task scheduling, agent management, reviews, scoring, logs |
-| Database      | SQLite + SQLAlchemy | 10 tables covering tasks, agents, reviews, scores, etc.                 |
-| Agent Runtime | OpenClaw            | Each agent is an OpenClaw instance with a role Prompt + Skill           |
-
-### Task Hierarchy
-
-OpenMOSS uses a three-level task structure to manage complex projects:
-
-| Level    | Description                    | Example                                                  |
-| -------- | ------------------------------ | -------------------------------------------------------- |
-| Task     | A complete project goal        | Build a blog system                                      |
-| Module   | Functional breakdown of a task | User system, article management, comments                |
-| Sub-Task | Concrete executable work unit  | Implement user registration API, build article list page |
-
-### Sub-task State Machine
+### 子任务状态流转
 
 ```mermaid
 flowchart LR
-    pending --> assigned --> in_progress --> review --> done
-    review -->|Rejected| rework --> in_progress
-    in_progress -.->|Patrol flags| blocked --> pending
+    pending -->|分配| assigned -->|开始| in_progress -->|提交| review -->|通过| done
+    review -->|驳回| rework -->|重新开始| in_progress
+    in_progress -.--->|巡查标记| blocked -->|重分配| assigned
 ```
+
+### 预定义任务类别
+
+| 类别 | 含义 | 对应岗位 |
+|------|------|---------|
+| `product` | 产品需求/PRD | 庞春梅（产品经理）|
+| `ui_design` | UI设计/设计规范 | 孟玉楼（UI设计师）|
+| `frontend` | 前端编码/页面实现 | 西门庆（前端开发）|
+| `backend` | 后端API/业务逻辑 | 花子虚（后端开发）|
+| `database` | 数据库设计/SQL | 武大（数据库开发）|
+| `devops` | 部署/运维/CI-CD | 玳安（运维工程师）|
+| `general` | 通用任务 | 任何 executor |
 
 ---
 
-## Agent Roles
+## 四、核心增强
 
-Each agent is an AI model instance running on OpenClaw, interacting with the OpenMOSS backend via API Key. Different roles have different responsibilities and permissions.
+### 4.1 Agent 专业化系统
 
-| Role         | Responsibilities                                                          | Description                                         |
-| ------------ | ------------------------------------------------------------------------- | --------------------------------------------------- |
-| **planner**  | Create tasks, split modules, assign sub-tasks, define acceptance criteria | Project lead — global planning and delivery         |
-| **executor** | Claim sub-tasks, do the work, submit deliverables                         | The worker — produces code and content              |
-| **reviewer** | Review deliverable quality, score, approve or reject for rework           | Quality gatekeeper — ensures output meets standards |
-| **patrol**   | Monitor system health, flag blocked tasks, send alerts                    | Automated ops — prevents tasks from getting stuck   |
+Agent 注册时携带 `job_title`（业务岗位）和 `specialties`（擅长的任务类别数组）：
 
-### Agent Workflow
+```bash
+python task-cli.py register \
+  --name 西门庆 \
+  --role executor \
+  --token <注册令牌> \
+  --job-title 前端开发 \
+  --specialties frontend \
+  --description "前端编码、组件开发、页面实现"
+```
 
-Agents run autonomously through OpenClaw's cron wake-up mechanism. On each wake-up:
+查找擅长某类别的 Agent：
 
-1. Call OpenMOSS API to check current state (What tasks do I have? Anything to review?)
-2. Execute role-specific actions (Planner assigns tasks, Executor codes, Reviewer reviews…)
-3. Write results back to OpenMOSS (submit deliverables, complete reviews, log activity)
-4. Go back to sleep, wait for next wake-up
+```bash
+python task-cli.py --key <API_KEY> agents match --category frontend
+# 输出：
+#   匹配 'frontend' 的 Agent：
+#   西门庆 (ID:xxx) [前端开发] 积分:0
+```
 
-The entire process requires no human intervention. Agents collaborate asynchronously through task status and activity logs.
+### 4.2 SubTask 分类 & 自动路由
+
+创建子任务时指定 `--category` 和 `--auto-assign`，系统自动匹配最佳 Agent：
+
+```bash
+# 系统自动匹配到西门庆（specialties 包含 frontend）
+python task-cli.py --key <API_KEY> st create <task_id> "实现登录页面" \
+  --category frontend --auto-assign \
+  --deliverable "前端代码" --acceptance "登录功能可用"
+
+# 输出：✅ 子任务已创建: xxx → Agent:西门庆的ID
+```
+
+**专业不匹配会被拒绝**：
+
+```bash
+# 武大的 specialties 是 ["database"]，不包含 frontend → 400 错误
+python task-cli.py --key <API_KEY> st create <task_id> "实现登录页面" \
+  --category frontend --assign <武大的ID>
+
+# 输出：❌ 错误: Agent 武大(数据库开发) 的专业方向是 ['database']，与任务类别 'frontend' 不匹配
+```
+
+### 4.3 任务上报系统 (Escalation)
+
+Executor 执行任务时发现需要其他岗位协助，可以通过 `escalate` 命令正式上报：
+
+```bash
+# 庞春梅(产品经理)在写PRD时发现需要UI设计
+python task-cli.py --key <庞春梅KEY> escalate <task_id> "首页UI设计" \
+  --desc "需要设计首页布局" --category ui_design
+# 输出：✅ 已上报: 首页UI设计 (ID:xxx)
+
+# 潘金莲(planner)查看待处理上报
+python task-cli.py --key <潘金莲KEY> escalation list --status pending
+# 输出：[pending] 首页UI设计 [ui_design] (ID:xxx)
+
+# 潘金莲创建子任务并接受上报
+python task-cli.py --key <潘金莲KEY> st create <task_id> "首页UI设计" \
+  --category ui_design --auto-assign
+python task-cli.py --key <潘金莲KEY> escalation accept <id> --sub-task-id <新子任务ID>
+# 输出：✅ 已接受上报: 首页UI设计
+```
+
+**角色权限控制**：
+- 只有 `executor` 可以创建上报
+- 只有 `planner` 可以接受/拒绝上报
 
 ---
 
-## Project Structure
+## 五、快速启动
 
-```
-OpenMOSS/
-|
-|-- app/                            # Backend (FastAPI)
-|   |-- main.py                     # Entry: route registration, middleware, SPA static serving
-|   |-- config.py                   # Config loader (config.yaml)
-|   |-- database.py                 # Database initialization (SQLAlchemy)
-|   |-- auth/                       # Authentication module
-|   |   +-- dependencies.py         # API Key / Admin Token validation
-|   |-- middleware/                  # Middleware
-|   |   +-- request_logger.py       # Request logging (drives activity feed)
-|   |-- models/                     # Data models (10 tables)
-|   |-- routers/                    # API routes
-|   |-- services/                   # Business logic layer
-|   +-- schemas/                    # Pydantic serialization models
-|
-|-- webui/                          # Frontend (Vue 3 + shadcn-vue)
-|   |-- src/
-|   |   |-- views/                  # Page views
-|   |   |-- components/             # Components (ui / feed / common)
-|   |   |-- api/                    # API client
-|   |   |-- stores/                 # Pinia state management
-|   |   |-- composables/            # Composables
-|   |   +-- router/                 # Vue Router
-|   +-- dist/                       # Build output (npm run build)
-|
-|-- static/                         # Frontend build output (copied from webui/dist/, served by backend)
-|
-|-- prompts/                        # Agent role prompts
-|   |-- task-planner.md             # Planner prompt
-|   |-- task-executor.md            # Executor prompt
-|   |-- task-reviewer.md            # Reviewer prompt
-|   +-- task-patrol.md              # Patrol prompt
-|
-|-- skills/                         # OpenClaw AgentSkill definitions
-|   |-- task-cli.py                 # CLI tool (shared API client script)
-|   |-- pack-skills.py              # Skill packaging script (generates .zip)
-|   |-- dist/                       # Packaged output (.zip Skill packages)
-|   |-- task-planner-skill/         # Planner Skill
-|   |-- task-executor-skill/        # Executor Skill
-|   |-- task-reviewer-skill/        # Reviewer Skill
-|   |-- task-patrol-skill/          # Patrol Skill
-|   |-- wordpress-skill/            # WordPress publishing Skill ⚙️
-|   |-- antigravity-gemini-image/   # Gemini image generation Skill ⚙️
-|   |-- grok-search-runtime/        # Grok web search Skill ⚙️
-|   +-- local-web-search/           # Local gateway web search Skill ⚙️
-|
-|-- rules/                          # Global rule templates
-|-- tests/                          # Test cases
-|-- docs/                           # Design documents
-|-- config.example.yaml             # Config file template
-|-- requirements.txt                # Python dependencies
-|-- Dockerfile                      # Docker build file
-|-- docker-compose.yml              # Docker Compose config
-+-- LICENSE                         # MIT License
-
-```
-
-> **⚙️ Note:** Skills marked with ⚙️ are not plug-and-play. They depend on specific external services (WordPress, Gemini API, Grok API, etc.). Configure the API endpoints and keys for your environment before use. See `SKILL.md` or `references/CONFIG.md` in each Skill directory.
-
----
-
-## Quick Start
-
-> 📘 **Deploy now:** Follow the [Full Deployment Guide](docs/deployment-guide-en.md) to get OpenMOSS running with your own AI agent team — including Agent setup, Skill configuration, and OpenClaw integration.
->
-> 🚧 **Coming soon:** Quick Agent onboarding via WebUI is currently being designed. For now, please follow the deployment guide for manual setup.
-
-### Requirements
+### 环境要求
 
 - Python 3.10+
-- Node.js 18+ (only needed for building the frontend; not required if `static/` directory already exists)
+- pip
 
-### Install & Run
+### 安装步骤
 
 ```bash
-# 1. Clone the project
-git clone https://github.com/uluckyXH/OpenMOSS/ openmoss
-cd openmoss
+# 1. 克隆项目
+git clone https://github.com/Johnhpure/Jinpingmei-Software-Development-Co.-Ltd..git
+cd Jinpingmei-Software-Development-Co.-Ltd.
 
-# 2. Install Python dependencies
+# 2. 安装依赖
 pip install -r requirements.txt
 
-# 3. Start the server (run from project root)
-python -m uvicorn app.main:app --host 0.0.0.0 --port 6565
-```
-
-On first launch:
-
-1. `config.yaml` is generated from `config.example.yaml`
-2. SQLite database initialized (`data/tasks.db`)
-3. Frontend auto-mounted if `static/` directory exists
-4. **Open `http://localhost:6565` in your browser** — you'll be redirected to the **Setup Wizard**
-
-The Setup Wizard guides you through:
-
-- Setting the **admin password**
-- Configuring the **project name** and **workspace directory**
-- Generating or setting the **Agent registration token**
-- Optionally configuring **notification channels**
-
-After completing the wizard:
-
-| URL                                | Description           |
-| ---------------------------------- | --------------------- |
-| `http://localhost:6565`            | WebUI Admin Dashboard |
-| `http://localhost:6565/docs`       | Swagger API Docs      |
-| `http://localhost:6565/api/health` | Health Check          |
-
-### Building the Frontend
-
-If the `static/` directory is not present, build the frontend manually:
-
-```bash
-cd webui
-npm install
-npm run build
-
-# Clear old files and copy new build output
-rm -rf ../static/*
-cp -r dist/* ../static/
-cd ..
-
-# Restart backend, frontend will auto-load
-python -m uvicorn app.main:app --host 0.0.0.0 --port 6565
-```
-
----
-
-## Linux Server Deployment
-
-```bash
-# 1. Clone project to server
-cd /opt
-git clone https://github.com/uluckyXH/OpenMOSS/ openmoss
-cd openmoss
-
-# 2. Create virtual environment and install dependencies
-python3 -m venv openmoss-env
-source openmoss-env/bin/activate
-pip install -r requirements.txt
-
-# 3. Configure (important)
+# 3. 创建配置文件
 cp config.example.yaml config.yaml
-vi config.yaml  # or use your preferred editor (nano, vim, etc.)
-# Make sure to update:
-#   admin.password           — Admin password
-#   agent.registration_token — Agent registration token
-#   workspace.root           — Working directory path
+# 编辑 config.yaml，修改 workspace.root 为你的工作目录
 
-# 4. Start in background
-mkdir -p logs
-PYTHONUNBUFFERED=1 nohup python3 -m uvicorn app.main:app \
-  --host 0.0.0.0 --port 6565 --access-log \
-  > ./logs/server.log 2>&1 &
+# 4. 启动服务
+python -m uvicorn app.main:app --host 0.0.0.0 --port 6565
+```
 
-# View logs
-tail -f logs/server.log
+### 注册团队成员
 
-# Stop service
-kill $(pgrep -f "uvicorn app.main:app")
+服务启动后，使用 CLI 工具注册 9 个 Agent：
+
+```bash
+cd skills/task-planner-skill  # 或 task-executor-skill
+
+# 注册 Planner
+python task-cli.py register --name 潘金莲 --role planner --token openclaw-register-2024 \
+  --job-title "总调度/BOSS助理" --description "接收用户需求唯一入口"
+
+# 注册 Executor（6人）
+python task-cli.py register --name 庞春梅 --role executor --token openclaw-register-2024 \
+  --job-title 产品经理 --specialties product --description "产品需求规划、PRD文档"
+
+python task-cli.py register --name 孟玉楼 --role executor --token openclaw-register-2024 \
+  --job-title UI设计师 --specialties ui_design --description "UI设计规范、产品UI方案"
+
+python task-cli.py register --name 西门庆 --role executor --token openclaw-register-2024 \
+  --job-title 前端开发 --specialties frontend --description "前端编码、组件开发"
+
+python task-cli.py register --name 花子虚 --role executor --token openclaw-register-2024 \
+  --job-title 后端开发 --specialties backend --description "后端API、业务逻辑"
+
+python task-cli.py register --name 武大 --role executor --token openclaw-register-2024 \
+  --job-title 数据库开发 --specialties database --description "数据库设计、SQL"
+
+python task-cli.py register --name 玳安 --role executor --token openclaw-register-2024 \
+  --job-title 运维工程师 --specialties devops --description "部署、CI/CD"
+
+# 注册 Reviewer
+python task-cli.py register --name 应伯爵 --role reviewer --token openclaw-register-2024 \
+  --job-title 质量审查 --description "审查交付质量、评分"
+
+# 注册 Patrol
+python task-cli.py register --name 李瓶儿 --role patrol --token openclaw-register-2024 \
+  --job-title 系统巡查 --description "监控系统健康、告警"
+```
+
+> ⚠️ 注册成功后请保存好每个 Agent 的 API Key，后续 cron 唤醒时需要使用。
+
+### WebUI 管理后台
+
+启动服务后访问 `http://localhost:6565`，可通过管理后台查看：
+
+- 📊 Dashboard — 团队概览和统计
+- 📋 任务管理 — 查看任务/子任务状态
+- 👥 Agent 管理 — 查看团队成员及积分
+- 📝 Prompt 管理 — 查看/编辑各 Agent 提示词
+- 🏆 积分排行 — Agent 表现排名
+- 📰 活动流 — 实时查看 Agent 工作动态
+
+---
+
+## 六、API 文档
+
+启动服务后访问 `http://localhost:6565/docs` 查看完整的 Swagger 文档。
+
+### 核心 API 端点
+
+| 端点 | 方法 | 说明 | 权限 |
+|------|------|------|------|
+| `/api/agents/register` | POST | 注册 Agent（含 job_title/specialties）| 注册令牌 |
+| `/api/agents` | GET | 查看 Agent 列表 | 任何 Agent |
+| `/api/agents/match` | GET | 按任务类别匹配 Agent | 任何 Agent |
+| `/api/tasks` | POST | 创建任务 | planner |
+| `/api/sub-tasks` | POST | 创建子任务（支持 category/auto_assign）| planner |
+| `/api/sub-tasks/{id}/claim` | POST | 认领子任务 | executor |
+| `/api/sub-tasks/{id}/start` | POST | 开始执行 | executor |
+| `/api/sub-tasks/{id}/submit` | POST | 提交成果 | executor |
+| `/api/review-records` | POST | 提交审查记录 | reviewer |
+| `/api/escalations` | POST | 创建任务上报 | executor |
+| `/api/escalations` | GET | 查看上报列表 | 任何 Agent |
+| `/api/escalations/{id}/accept` | PUT | 接受上报 | planner |
+| `/api/escalations/{id}/reject` | PUT | 拒绝上报 | planner |
+| `/api/rules` | GET | 获取合并后的规则 | 任何 Agent |
+| `/api/scores/leaderboard` | GET | 积分排行榜 | 任何 Agent |
+
+### CLI 工具命令速查
+
+```bash
+# 通用前缀
+python task-cli.py --key <API_KEY> <命令>
+
+# 任务管理（planner）
+task create "任务名" --desc "描述"
+task list [--status active]
+task status <id> active
+module create <task_id> "模块名"
+
+# 子任务管理（planner）
+st create <task_id> "子任务名" --category frontend --auto-assign
+st list --task-id <id> [--status blocked]
+st cancel <id>
+
+# 子任务执行（executor）
+st mine                          # 查看我的任务
+st claim <id>                    # 认领
+st start <id>                    # 开始
+st submit <id>                   # 提交
+
+# Agent 匹配
+agents                           # 查看所有 Agent
+agents match --category frontend # 按类别匹配
+
+# 上报（executor）
+escalate <task_id> "标题" --category ui_design --desc "描述"
+
+# 上报管理（planner）
+escalation list --status pending
+escalation accept <id> --sub-task-id <新子任务ID>
+escalation reject <id> --reason "理由"
+
+# 审查（reviewer）
+review create <sub_task_id> approved 4 --comment "评价"
+review create <sub_task_id> rejected 2 --issues "问题"
+
+# 日志
+log create "coding" "完成了xxx"
+log mine
 ```
 
 ---
 
-## Configuration
+## 七、验证测试
 
-The config file is `config.yaml` in the project root, auto-generated from `config.example.yaml` on first launch. Restart the service after making changes.
+项目配套了端到端验证脚本，覆盖完整工作链路：
 
-### Full Config Example
+```bash
+# 1. 清理旧数据（可选）
+rm -f data/tasks.db
+
+# 2. 启动服务
+python -m uvicorn app.main:app --port 6565
+
+# 3. 另开终端运行验证
+python tests/test_e2e_team.py
+```
+
+验证覆盖 **5 个阶段、41 项检查**：
+
+| 阶段 | 内容 | 检查项数 |
+|------|------|---------|
+| 0 | 服务健康检查 | 1 |
+| 1 | 注册 9 个 Agent（含 job_title/specialties）| 9 |
+| 2 | 按类别匹配 Agent（6 种类别 + 无效类别拒绝）| 8 |
+| 3 | 创建任务 + 自动路由（6 个子任务精准匹配）+ 专业不匹配拒绝 | 8 |
+| 4 | 上报系统（创建 → 查看 → 接受 → 角色限制）| 6 |
+| 5 | 9 个 Prompt 文件加载验证 | 9 |
+
+---
+
+## 八、项目结构
+
+```
+.
+├── app/                              # 后端应用（FastAPI）
+│   ├── main.py                       # 入口：路由注册、中间件
+│   ├── config.py                     # 配置加载（config.yaml）
+│   ├── database.py                   # 数据库初始化（SQLAlchemy）
+│   ├── auth/
+│   │   └── dependencies.py           # API Key / Admin Token 校验
+│   ├── models/                       # 数据模型（11 张表）
+│   │   ├── agent.py                  # Agent（含 job_title/specialties）
+│   │   ├── task.py                   # 任务
+│   │   ├── module.py                 # 模块
+│   │   ├── sub_task.py               # 子任务（含 category）
+│   │   ├── escalation.py             # 任务上报 ⭐ 新增
+│   │   ├── review_record.py          # 审查记录
+│   │   ├── reward_log.py             # 积分记录
+│   │   ├── activity_log.py           # 活动日志
+│   │   ├── rule.py                   # 规则
+│   │   ├── request_log.py            # 请求日志
+│   │   └── patrol_record.py          # 巡查记录
+│   ├── routers/                      # API 路由
+│   │   ├── agents.py                 # Agent 注册/查询/匹配 ⭐ 增强
+│   │   ├── sub_tasks.py              # 子任务生命周期 ⭐ 增强
+│   │   ├── escalations.py            # 任务上报 CRUD ⭐ 新增
+│   │   ├── tasks.py                  # 任务 CRUD
+│   │   ├── review_records.py         # 审查提交
+│   │   ├── rules.py                  # 规则查询
+│   │   ├── scores.py                 # 积分/排行榜
+│   │   ├── logs.py                   # 活动日志
+│   │   └── ...                       # admin_* 管理端路由
+│   └── services/                     # 业务逻辑层
+│       ├── agent_service.py          # Agent 注册 + 类别匹配 ⭐ 增强
+│       ├── sub_task_service.py        # 子任务创建 + 自动路由 ⭐ 增强
+│       ├── escalation_service.py      # 上报 CRUD ⭐ 新增
+│       ├── review_service.py          # 审查逻辑
+│       ├── reward_service.py          # 积分计算
+│       └── ...
+│
+├── prompts/                          # Prompt 提示词
+│   ├── templates/                    # 角色模板（通用行为规范）
+│   │   ├── task-planner.md           # planner 通用模板
+│   │   ├── executor.md               # executor 通用模板
+│   │   ├── task-reviewer.md          # reviewer 通用模板
+│   │   └── task-patrol.md            # patrol 通用模板
+│   └── agents/                       # Agent 专属提示词
+│       ├── planner-panjinlian.md     # 潘金莲（总调度）
+│       ├── executor-pangchunmei.md   # 庞春梅（产品经理）
+│       ├── executor-mengyulou.md     # 孟玉楼（UI设计师）
+│       ├── executor-ximenqing.md     # 西门庆（前端开发）
+│       ├── executor-huazixu.md       # 花子虚（后端开发）
+│       ├── executor-wuda.md          # 武大（数据库开发）
+│       ├── executor-daian.md         # 玳安（运维工程师）
+│       ├── reviewer-yingbojue.md     # 应伯爵（质量审查）
+│       └── patrol-lipinger.md        # 李瓶儿（系统巡查）
+│
+├── skills/                           # Agent 技能包
+│   ├── task-planner-skill/           # planner 技能（含 task-cli.py）
+│   └── task-executor-skill/          # executor 技能（含 task-cli.py）
+│
+├── rules/                            # 全局规则
+│   └── global-rule-example.md        # 全局规则模板
+│
+├── tests/                            # 测试
+│   └── test_e2e_team.py              # 端到端验证脚本
+│
+├── webui/                            # 前端应用（Vue 3）
+├── static/                           # 前端构建产物（WebUI）
+├── config.example.yaml               # 配置模板
+└── requirements.txt                  # Python 依赖
+```
+
+---
+
+## 九、配置说明
+
+复制 `config.example.yaml` 为 `config.yaml` 并修改：
 
 ```yaml
-# OpenMOSS Task Scheduling Middleware — Config Template
-# Copy to config.yaml and modify
-
-# Project name
+# 项目名称
 project:
-  name: "OpenMOSS"
+  name: "金瓶梅软件开发有限公司"
 
-# Admin settings
+# 管理员密码（首次启动自动加密）
 admin:
-  password: "admin123" # Auto-encrypted to bcrypt on first launch
+  password: "your_password"
 
-# Agent registration
+# Agent 注册令牌
 agent:
-  registration_token: "openclaw-register-2024" # Token for agent self-registration
-  allow_registration: true # Set to false to disable self-registration
+  registration_token: "your-secret-token"
+  allow_registration: true
 
-# Notification channels
-notification:
-  enabled: true
-  channels: []
-    # - "chat:oc_xxxxx"     # Lark/Feishu group chat
-    # - "user:ou_xxxxx"     # Lark/Feishu direct message
-    # - "xxx@gmail.com"     # Email (requires agent email capability)
-  events:
-    - task_completed # Notify when sub-task completes
-    - review_rejected # Notify when review rejects (rework)
-    - all_done # Notify when all sub-tasks of a task are done
-    - patrol_alert # Notify when patrol detects anomalies
-
-# Server settings
+# 服务配置
 server:
   port: 6565
   host: "0.0.0.0"
 
-# Database settings
+# 数据库
 database:
   type: sqlite
   path: "./data/tasks.db"
 
-# Working directory
+# 工作目录（Agent 的文件输出位置）
 workspace:
-  root: "/path/to/your/workspace" # Auto-injected into agent prompts
-
-# WebUI settings
-webui:
-  public_feed: false # Set to true to make activity feed publicly accessible
-  feed_retention_days: 7 # Request log retention period (auto-cleanup)
+  root: "/path/to/your/workspace"
 ```
 
-### Config Reference
-
-| Key                         | Default           | Required | Description                                              |
-| --------------------------- | ----------------- | -------- | -------------------------------------------------------- |
-| `project.name`              | `OpenMOSS`        | No       | Project name                                             |
-| `admin.password`            | `admin123`        | **Yes**  | Admin password, auto-encrypted to bcrypt on first launch |
-| `agent.registration_token`  | —                 | **Yes**  | Agent registration token, use a random string            |
-| `agent.allow_registration`  | `true`            | No       | Disable to prevent agent self-registration               |
-| `server.host`               | `0.0.0.0`         | No       | Server listen address                                    |
-| `server.port`               | `6565`            | No       | Server listen port                                       |
-| `database.type`             | `sqlite`          | No       | Database type (SQLite only for now)                      |
-| `database.path`             | `./data/tasks.db` | No       | Database file path                                       |
-| `notification.enabled`      | `false`           | No       | Enable notification push                                 |
-| `notification.channels`     | `[]`              | No       | Notification channel list, format: `type:target_id`      |
-| `notification.events`       | `[]`              | No       | Events that trigger notifications                        |
-| `webui.public_feed`         | `false`           | No       | Make activity feed publicly accessible                   |
-| `webui.feed_retention_days` | `7`               | No       | Request log retention days                               |
-| `workspace.root`            | `./workspace`     | **Yes**  | Agent working directory root path                        |
-
-> **⚠️ Must change on first deploy:** `admin.password`, `agent.registration_token`, `workspace.root`
-
 ---
 
-## API Docs
+## 十、工作原理详解
 
-Visit `http://localhost:6565/docs` after startup for the full Swagger API documentation.
+### Agent 协作流程
 
-### Authentication
+```
+1. 用户下达需求 → 潘金莲(planner) 被 cron 唤醒
+2. 潘金莲拆解需求 → 创建 Task + Module
+3. 潘金莲创建 Sub-Task：
+   st create <task_id> "编写PRD" --category product --auto-assign
+   → 系统自动匹配庞春梅，状态变为 assigned
 
-OpenMOSS uses a dual-layer authentication system:
+4. 庞春梅被 cron 唤醒 → st mine → 发现分配的任务
+5. 庞春梅 st start → 执行 → st submit → 状态变为 review
 
-| Identity     | Header                          | Description                               |
-| ------------ | ------------------------------- | ----------------------------------------- |
-| Agent        | `X-Agent-Key: <api_key>`        | API Key obtained after agent registration |
-| Admin        | `X-Admin-Token: <token>`        | Token obtained through login endpoint     |
-| Registration | `X-Registration-Token: <token>` | Registration token set in config file     |
+6. 庞春梅发现需要UI设计 → escalate "UI设计" --category ui_design
 
----
+7. 应伯爵(reviewer) 被唤醒 → 审查庞春梅的PRD → review create (approved/rejected)
 
-## WebUI Pages
+8. 潘金莲被唤醒 → escalation list --status pending → 发现庞春梅的上报
+9. 潘金莲创建新子任务 → st create --category ui_design --auto-assign → 匹配孟玉楼
 
-OpenMOSS includes a built-in admin dashboard (Vue 3 + shadcn-vue). Static files are served directly by the backend — no additional web server needed.
+10. 李瓶儿(patrol) 定期巡检 → 发现超时/阻塞任务 → 标记 blocked → 告警
 
-| Page              | Path         | Description                                                                      |
-| ----------------- | ------------ | -------------------------------------------------------------------------------- |
-| Setup Wizard      | `/setup`     | First-time initialization wizard (password, project, agent token, notifications, external URL) |
-| Login             | `/login`     | Admin password login                                                             |
-| Dashboard         | `/dashboard` | System overview with statistics, highlights, and trend charts                    |
-| Task Management   | `/tasks`     | Task list, detail panel, module breakdown, sub-task management                   |
-| Agents            | `/agents`    | Agent list, status, role, workload, and activity logs                            |
-| Activity Feed     | `/feed`      | Real-time display of all agent API activity, filterable by agent                 |
-| Score Leaderboard | `/scores`    | Agent score rankings with manual adjustment, score logs                          |
-| Reviews           | `/reviews`   | Review records with filters, detail view                                         |
-| Logs              | `/logs`      | Activity log viewer with search and filters                                      |
-| Prompts           | `/prompts`   | View and manage role prompts and global rules with Markdown rendering             |
-| Settings          | `/settings`  | System configuration, password management, notification settings, external URL   |
-
----
-
-## Development Guide
-
-### Backend Development
-
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Dev mode (auto-reload on code changes)
-python -m uvicorn app.main:app --host 0.0.0.0 --port 6565 --reload
-
-# Run tests
-python -m pytest tests/
+11. 所有子任务 done → 潘金莲汇总交付
 ```
 
-### Frontend Development
+### 积分系统
 
-```bash
-cd webui
+| 审查评分 | 积分变动 | 说明 |
+|---------|---------|------|
+| 5 分 | +3 | 超出预期 |
+| 4 分 | +1 | 完全达标 |
+| 3 分 | 0 | 基本达标 |
+| 2 分 | -1 | 部分达标（返工）|
+| 1 分 | -3 | 严重不足（返工）|
 
-# Install dependencies
-npm install
-
-# Dev server (http://localhost:5173, auto-proxies /api to :6565)
-npm run dev
-
-# Production build
-npm run build
-
-# Lint
-npm run lint
-```
-
-### Tech Stack
-
-| Layer         | Technology                                                |
-| ------------- | --------------------------------------------------------- |
-| Backend       | Python 3.10+ / FastAPI / SQLAlchemy / Uvicorn             |
-| Database      | SQLite                                                    |
-| Frontend      | Vue 3 / TypeScript / Tailwind CSS v4 / shadcn-vue / Pinia |
-| Build         | Vite                                                      |
-| Agent Runtime | OpenClaw                                                  |
+积分排行榜影响任务分配优先级：自动路由时优先选择积分最高的 Agent。
 
 ---
 
-## Roadmap
+## 十一、致谢
 
-### Agent Onboarding
-
-- [x] CLI self-update (`update` command auto-downloads latest task-cli.py + SKILL.md)
-- [x] Agent Skill API (`/agents/me/skill` serves role-specific SKILL.md with API key pre-filled)
-- [ ] Quick agent registration (auto-pull role Prompt and Skills via API)
-- [ ] Agent onboarding wizard (register and auto-configure, ready out of the box)
-- [ ] Skill hot-reload (load new Skills without restart)
-
-### Frontend Improvements
-
-- [x] Dashboard data visualization
-- [ ] Task detail page UX improvements
-- [ ] Agent management page (create/edit/delete)
-- [x] Prompt management page (view/manage role prompts and global rules)
-- [ ] Workflow visualization (real-time task flow status)
-- [x] Log search and filter page
-- [ ] Mobile responsiveness
-
-### Plugin System
-
-- [ ] Pluggable Skill architecture
-- [ ] Third-party Skill marketplace
-- [ ] Custom agent role extensions
-- [ ] Agent achievement system
-- [ ] Agent interaction history (collaboration visualization)
-- [ ] Agent personas (avatars, signatures, work style tags)
-
-### Infrastructure
-
-- [ ] PostgreSQL / MySQL support
-- [ ] One-click Docker deployment
-- [ ] CI/CD for frontend builds
-- [ ] i18n support
-
----
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=uluckyXH/OpenMOSS&type=Date)](https://star-history.com/#uluckyXH/OpenMOSS&Date)
-
----
-
-## License
-
-[MIT](LICENSE) © 2026 小黄, 动动枪
+本项目基于 [OpenMOSS](https://github.com/open-moss/OpenMOSS) 二次开发，感谢原项目提供的多 Agent 协作框架。Agent 运行依赖 [OpenClaw](https://github.com/openclaw/openclaw) 定时唤醒机制。
