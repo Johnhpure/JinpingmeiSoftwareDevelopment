@@ -1,6 +1,6 @@
 # 金瓶梅软件开发有限公司
 
-**基于 OpenMOSS 的多 AI Agent 互联网产品开发团队**
+**基于 OpenMOSS + OpenClaw 的多 AI Agent 互联网产品开发团队**
 
 <p align="center">
 🏢 <a href="#一项目简介">项目简介</a> · 
@@ -9,7 +9,8 @@
 🔧 <a href="#四核心增强">核心增强</a> · 
 ⚡ <a href="#五快速启动">快速启动</a> · 
 📡 <a href="#六api-文档">API 文档</a> · 
-🧪 <a href="#七验证测试">验证测试</a>
+🧪 <a href="#七验证测试">验证测试</a> · 
+🚀 <a href="#八openclaw-多-agent-部署">OpenClaw 部署</a>
 </p>
 
 <p align="center">
@@ -17,17 +18,19 @@
 <img src="https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi&logoColor=white" alt="FastAPI">
 <img src="https://img.shields.io/badge/Frontend-Vue%203-4FC08D?logo=vuedotjs&logoColor=white" alt="Vue">
 <img src="https://img.shields.io/badge/Database-SQLite-003B57?logo=sqlite&logoColor=white" alt="SQLite">
+<img src="https://img.shields.io/badge/Runtime-OpenClaw-ff6b35?logo=data:image/svg+xml;base64,&logoColor=white" alt="OpenClaw">
 <img src="https://img.shields.io/badge/Agents-9名成员-8b5cf6" alt="Agents">
 <img src="https://img.shields.io/badge/角色-4种系统角色-f59e0b" alt="Roles">
+<img src="https://img.shields.io/badge/Telegram-集成-26A5E4?logo=telegram&logoColor=white" alt="Telegram">
 </p>
 
-> **一句话概括：** 9 个 AI Agent 组成的互联网产品开发团队，从产品经理到运维，自动协作完成软件开发全流程——人类只需下达需求、看交付。
+> **一句话概括：** 9 个 AI Agent 组成的互联网产品开发团队，通过 OpenClaw Gateway + Telegram 群组协作，从产品经理到运维自动完成软件开发全流程——人类只需下达需求、看交付。
 
 ---
 
 ## 一、项目简介
 
-本项目基于 [OpenMOSS](https://github.com/open-moss/OpenMOSS)（Multi-agent Orchestration & Self-evolving System）二次开发，将原始的通用多 Agent 协作平台定制为一个**互联网产品开发团队**。
+本项目基于 [OpenMOSS](https://github.com/open-moss/OpenMOSS)（Multi-agent Orchestration & Self-evolving System）二次开发，并通过 [OpenClaw](https://github.com/nicholasgriffintn/OpenClaw) Gateway 实现 Agent 运行调度与 Telegram 群组交互，将原始的通用多 Agent 协作平台定制为一个**互联网产品开发团队**。
 
 ### 核心理念
 
@@ -40,17 +43,18 @@
 - **质量审查** 检查每一份交付物
 - **系统巡查** 确保不会有任务卡住
 
-全过程通过 cron 定时唤醒 Agent，**无需人类介入**，Agent 之间通过 API 异步协作。
+全过程通过 OpenClaw cron 定时唤醒 + Webhook 事件驱动唤醒 Agent，**无需人类介入**，Agent 之间通过 `sessions_send` 和 FastAPI 异步协作。
 
 ### 二次开发增强
 
-相比原版 OpenMOSS，本项目新增了 **三大代码级增强**，确保任务传递的准确性：
+相比原版 OpenMOSS，本项目新增了 **四大代码级增强**，确保任务传递的准确性：
 
 | 增强 | 解决的问题 |
 |------|-----------|
 | **Agent 专业化系统** | 每个 Agent 有明确的 `job_title` 和 `specialties`，系统知道谁能做什么 |
 | **SubTask 分类 & 自动路由** | 子任务带 `category`，系统自动匹配最佳 Agent，杜绝派错人 |
 | **任务上报系统 (Escalation)** | Executor 可结构化上报新需求给 Planner，不会被遗漏 |
+| **Webhook 事件驱动通知** | 任务状态变化时自动通过 OpenClaw Webhook 唤醒目标 Agent，实现实时响应 |
 
 ---
 
@@ -88,9 +92,10 @@
 | 层 | 技术 | 说明 |
 |----|------|------|
 | 前端 | Vue 3 + shadcn-vue | WebUI 管理后台 |
-| 后端 | FastAPI (:6565) | RESTful API |
+| 后端 | FastAPI (:6565) | RESTful API + Webhook 事件通知 |
 | 数据库 | SQLite + SQLAlchemy | 11 张表（含新增 escalation 表） |
-| Agent 运行 | OpenClaw | 每个 Agent 通过 cron 定时唤醒运行 |
+| Agent 运行 | OpenClaw Gateway | cron 定时唤醒 + Webhook 事件驱动 |
+| 通信 | Telegram + sessions_send | 群组交互 + Agent 间内部通信 |
 
 ### 任务生命周期
 
@@ -409,13 +414,109 @@ python tests/test_e2e_team.py
 
 ---
 
-## 八、项目结构
+## 八、OpenClaw 多 Agent 部署
+
+本项目已完成与 [OpenClaw Gateway](https://github.com/nicholasgriffintn/OpenClaw) 的深度集成，支持：
+
+- 🤖 **5 个 Telegram Bot** 映射到 5 个系统角色（planner / executor ×2 / reviewer / patrol）
+- 💬 **Telegram Forum Supergroup** 作为人机交互界面
+- ⏰ **Cron 定时任务** 自动唤醒 Agent 执行巡查和晨会
+- 🔔 **Webhook 事件驱动** 任务状态变化时实时唤醒目标 Agent
+- 🔗 **Agent 间通信** 通过 OpenClaw `sessions_send` 实现跨 Agent 协作
+
+### 部署文件
+
+| 文件 | 说明 |
+|------|------|
+| [`deploy/openclaw.example.jsonc`](deploy/openclaw.example.jsonc) | OpenClaw 多 Agent 配置模板（含详细注释） |
+| [`deploy/DEPLOY_GUIDE.md`](deploy/DEPLOY_GUIDE.md) | 完整的分步部署指南 |
+| `deploy/soul/planner/SOUL.md` | Planner Agent 灵魂文件 |
+| `deploy/soul/executor/SOUL.md` | Executor Agent 灵魂文件 |
+| `deploy/soul/reviewer/SOUL.md` | Reviewer Agent 灵魂文件 |
+| `deploy/soul/patrol/SOUL.md` | Patrol Agent 灵魂文件 |
+
+### 快速部署
+
+```bash
+# 1. 复制并编辑 OpenClaw 配置
+cp deploy/openclaw.example.jsonc ~/.openclaw/openclaw.json
+# 替换 <TELEGRAM_BOT_TOKEN_*>、<YOUR_FORUM_GROUP_ID>、<WEBHOOK_SECRET_TOKEN>
+
+# 2. 部署 Agent Workspace 和 SOUL
+mkdir -p ~/.openclaw/workspace-{planner,executor-1,executor-2,reviewer,patrol}
+cp deploy/soul/planner/SOUL.md  ~/.openclaw/workspace-planner/SOUL.md
+cp deploy/soul/executor/SOUL.md ~/.openclaw/workspace-executor-1/SOUL.md
+cp deploy/soul/executor/SOUL.md ~/.openclaw/workspace-executor-2/SOUL.md
+cp deploy/soul/reviewer/SOUL.md ~/.openclaw/workspace-reviewer/SOUL.md
+cp deploy/soul/patrol/SOUL.md   ~/.openclaw/workspace-patrol/SOUL.md
+
+# 3. 启动服务
+python -m uvicorn app.main:app --host 0.0.0.0 --port 6565
+openclaw gateway restart
+```
+
+> 📖 **详细步骤请参阅** [`deploy/DEPLOY_GUIDE.md`](deploy/DEPLOY_GUIDE.md)
+
+### Webhook 事件驱动
+
+当任务状态发生关键变化时，FastAPI 中间件会自动通过 Webhook 唤醒对应 Agent：
+
+| 事件 | 触发时机 | 唤醒目标 |
+|------|---------|----------|
+| `task_assigned` | Planner 分配子任务 | 目标 Executor |
+| `task_submitted` | Executor 提交成果 | Reviewer |
+| `review_approved` | 审查通过 | Planner |
+| `review_rejected` | 审查驳回 | 原 Executor（返工）|
+| `escalation_created` | Executor 创建上报 | Planner |
+| `patrol_alert` | 巡查异常 | Planner |
+| `all_subtasks_done` | 所有子任务完成 | Planner（汇总交付） |
+
+配置方式（`config.yaml`）：
+
+```yaml
+openclaw:
+  gateway_url: "http://localhost:4160"
+  webhook_token: "你的Webhook密钥"
+  webhook_enabled: true
+```
+
+### 架构概览
+
+```
+┌──────────────────────────────────────────────────┐
+│             Telegram Forum Supergroup            │
+│  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────────┐│
+│  │规划频道│ │执行频道│ │审查频道│ │ 巡查频道   ││
+│  └───┬────┘ └───┬────┘ └───┬────┘ └─────┬──────┘│
+└──────┼──────────┼──────────┼────────────┼────────┘
+       │          │          │            │
+┌──────┼──────────┼──────────┼────────────┼────────┐
+│      ▼          ▼          ▼            ▼        │
+│  ┌────────┐ ┌────────┐ ┌────────┐ ┌──────────┐  │
+│  │Planner │ │Executor│ │Reviewer│ │  Patrol   │  │
+│  │  Bot   │ │  Bot   │ │  Bot   │ │   Bot     │  │
+│  └───┬────┘ └───┬────┘ └───┬────┘ └─────┬────┘  │
+│      │  sessions_send  sessions_send     │       │
+│  OpenClaw Gateway (Agent 调度 + 通信)             │
+└──────────────────┬───────────────────────────────┘
+                   │ Webhook (/hooks/agent)
+                   ▼
+┌──────────────────────────────────────────────────┐
+│  FastAPI 任务调度中间件 (:6565)                    │
+│  webhook_notify → fire_event → 唤醒目标 Agent    │
+│  数据库: SQLite  │  API: /api/  │  WebUI: /      │
+└──────────────────────────────────────────────────┘
+```
+
+---
+
+## 九、项目结构
 
 ```
 .
 ├── app/                              # 后端应用（FastAPI）
-│   ├── main.py                       # 入口：路由注册、中间件
-│   ├── config.py                     # 配置加载（config.yaml）
+│   ├── main.py                       # 入口：路由注册、中间件、Webhook 初始化
+│   ├── config.py                     # 配置加载（config.yaml + OpenClaw 配置）
 │   ├── database.py                   # 数据库初始化（SQLAlchemy）
 │   ├── auth/
 │   │   └── dependencies.py           # API Key / Admin Token 校验
@@ -443,11 +544,21 @@ python tests/test_e2e_team.py
 │   │   └── ...                       # admin_* 管理端路由
 │   └── services/                     # 业务逻辑层
 │       ├── agent_service.py          # Agent 注册 + 类别匹配 ⭐ 增强
-│       ├── sub_task_service.py        # 子任务创建 + 自动路由 ⭐ 增强
-│       ├── escalation_service.py      # 上报 CRUD ⭐ 新增
-│       ├── review_service.py          # 审查逻辑
-│       ├── reward_service.py          # 积分计算
+│       ├── sub_task_service.py       # 子任务创建 + 自动路由 ⭐ 增强
+│       ├── escalation_service.py     # 上报 CRUD ⭐ 新增
+│       ├── review_service.py         # 审查逻辑
+│       ├── reward_service.py         # 积分计算
+│       ├── webhook_notify.py         # OpenClaw Webhook 事件通知 🆕
 │       └── ...
+│
+├── deploy/                           # OpenClaw 部署配置 🆕
+│   ├── openclaw.example.jsonc        # 多 Agent 配置模板（JSONC 含注释）
+│   ├── DEPLOY_GUIDE.md               # 分步部署指南
+│   └── soul/                         # Agent 灵魂文件
+│       ├── planner/SOUL.md           # Planner 人格与指令
+│       ├── executor/SOUL.md          # Executor 人格与指令
+│       ├── reviewer/SOUL.md          # Reviewer 人格与指令
+│       └── patrol/SOUL.md            # Patrol 人格与指令
 │
 ├── prompts/                          # Prompt 提示词
 │   ├── templates/                    # 角色模板（通用行为规范）
@@ -478,13 +589,13 @@ python tests/test_e2e_team.py
 │
 ├── webui/                            # 前端应用（Vue 3）
 ├── static/                           # 前端构建产物（WebUI）
-├── config.example.yaml               # 配置模板
+├── config.example.yaml               # 配置模板（含 OpenClaw 配置段）
 └── requirements.txt                  # Python 依赖
 ```
 
 ---
 
-## 九、配置说明
+## 十、配置说明
 
 复制 `config.example.yaml` 为 `config.yaml` 并修改：
 
@@ -515,34 +626,44 @@ database:
 # 工作目录（Agent 的文件输出位置）
 workspace:
   root: "/path/to/your/workspace"
+
+# OpenClaw Gateway 集成（可选，部署到 OpenClaw 时启用）
+openclaw:
+  gateway_url: "http://localhost:4160"
+  webhook_token: "your-webhook-secret"
+  webhook_enabled: true
 ```
 
 ---
 
-## 十、工作原理详解
+## 十一、工作原理详解
 
 ### Agent 协作流程
 
 ```
-1. 用户下达需求 → 潘金莲(planner) 被 cron 唤醒
+1. 用户在 Telegram 群组下达需求 → 潘金莲(planner) 被唤醒
 2. 潘金莲拆解需求 → 创建 Task + Module
 3. 潘金莲创建 Sub-Task：
    st create <task_id> "编写PRD" --category product --auto-assign
    → 系统自动匹配庞春梅，状态变为 assigned
+   → Webhook 自动触发 task_assigned 事件，唤醒庞春梅
 
-4. 庞春梅被 cron 唤醒 → st mine → 发现分配的任务
+4. 庞春梅被 Webhook 事件驱动唤醒 → st mine → 发现分配的任务
 5. 庞春梅 st start → 执行 → st submit → 状态变为 review
+   → Webhook 自动触发 task_submitted 事件，唤醒应伯爵
 
 6. 庞春梅发现需要UI设计 → escalate "UI设计" --category ui_design
+   → Webhook 自动触发 escalation_created 事件，唤醒潘金莲
 
 7. 应伯爵(reviewer) 被唤醒 → 审查庞春梅的PRD → review create (approved/rejected)
+   → Webhook 自动触发 review_approved / review_rejected 事件
 
 8. 潘金莲被唤醒 → escalation list --status pending → 发现庞春梅的上报
 9. 潘金莲创建新子任务 → st create --category ui_design --auto-assign → 匹配孟玉楼
 
-10. 李瓶儿(patrol) 定期巡检 → 发现超时/阻塞任务 → 标记 blocked → 告警
+10. 李瓶儿(patrol) 被 cron 每 30 分钟唤醒 → 巡查异常 → 标记 blocked → 告警
 
-11. 所有子任务 done → 潘金莲汇总交付
+11. 所有子任务 done → Webhook 触发 all_subtasks_done → 潘金莲汇总交付
 ```
 
 ### 积分系统
@@ -559,6 +680,6 @@ workspace:
 
 ---
 
-## 十一、致谢
+## 十二、致谢
 
-本项目基于 [OpenMOSS](https://github.com/open-moss/OpenMOSS) 二次开发，感谢原项目提供的多 Agent 协作框架。Agent 运行依赖 [OpenClaw](https://github.com/openclaw/openclaw) 定时唤醒机制。
+本项目基于 [OpenMOSS](https://github.com/open-moss/OpenMOSS) 二次开发，感谢原项目提供的多 Agent 协作框架。Agent 运行调度依赖 [OpenClaw](https://github.com/nicholasgriffintn/OpenClaw) Gateway，通过 cron 定时唤醒 + Webhook 事件驱动实现全自动协作。
