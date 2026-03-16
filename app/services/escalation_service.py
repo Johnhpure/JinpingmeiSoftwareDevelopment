@@ -9,6 +9,7 @@ from app.models.escalation import Escalation
 from app.models.sub_task import SubTask
 from app.models.task import Task
 from app.models.agent import Agent
+from app.services.webhook_notify import fire_event, Events
 
 
 def create_escalation(
@@ -44,6 +45,16 @@ def create_escalation(
     db.add(escalation)
     db.commit()
     db.refresh(escalation)
+
+    # 通知 Planner 有新的上报
+    fire_event(Events.ESCALATION_CREATED, "planner", {
+        "escalation_id": escalation.id,
+        "title": title,
+        "source_agent": source_agent,
+        "task_id": task_id,
+        "suggested_category": suggested_category,
+    })
+
     return escalation
 
 

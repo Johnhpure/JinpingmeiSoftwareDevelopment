@@ -234,6 +234,25 @@ class AppConfig:
         """CLI 工具最新版本号（task-cli.py 自更新用）"""
         return self._data.get("cli", {}).get("version", 1)
 
+    # ============================================================
+    # OpenClaw Gateway 集成配置
+    # ============================================================
+
+    @property
+    def openclaw_gateway_url(self) -> str:
+        """OpenClaw Gateway 地址（用于 Webhook 通知）"""
+        return self._data.get("openclaw", {}).get("gateway_url", "")
+
+    @property
+    def openclaw_webhook_token(self) -> str:
+        """OpenClaw Webhook 认证令牌"""
+        return self._data.get("openclaw", {}).get("webhook_token", "")
+
+    @property
+    def openclaw_webhook_enabled(self) -> bool:
+        """是否启用 OpenClaw Webhook 事件通知"""
+        return self._data.get("openclaw", {}).get("webhook_enabled", False)
+
     @property
     def raw(self) -> dict:
         """获取原始配置数据"""

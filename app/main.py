@@ -65,10 +65,22 @@ async def lifespan(app: FastAPI):
     # 清理过期请求日志
     _cleanup_old_request_logs()
 
+    # 初始化 OpenClaw Webhook 事件通知
+    from app.services.webhook_notify import notifier as openclaw_notifier
+    openclaw_notifier.configure(
+        gateway_url=config.openclaw_gateway_url,
+        webhook_token=config.openclaw_webhook_token,
+        enabled=config.openclaw_webhook_enabled,
+    )
+
     print(f"[{config.project_name}] 服务启动 → http://{config.server_host}:{config.server_port}")
     print(f"[{config.project_name}] 数据库: {config.database_path}")
     print(f"[{config.project_name}] 工作目录: {config.workspace_root}")
     print(f"[{config.project_name}] 注册令牌: {config.registration_token}")
+    if config.openclaw_webhook_enabled:
+        print(f"[{config.project_name}] OpenClaw Webhook: ✅ {config.openclaw_gateway_url}")
+    else:
+        print(f"[{config.project_name}] OpenClaw Webhook: ❌ 未启用")
     yield
     print(f"[{config.project_name}] 服务关闭")
 

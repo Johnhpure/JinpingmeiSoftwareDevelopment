@@ -9,6 +9,15 @@ from app.models.sub_task import SubTask
 from app.models.task import Task
 from app.models.module import Module
 from app.models.agent import Agent
+from app.services.webhook_notify import fire_event, Events
+
+
+def _resolve_executor_agent(agent_id: str) -> str:
+    """将数据库中的 Agent ID 映射到 OpenClaw 的 agentId。
+    当前直接使用 agent_id，后续可根据需要扩展映射逻辑。"""
+    # OpenClaw 的 agentId 在 openclaw.json 中定义
+    # 默认直接透传，如果 Agent 注册时的 slug 与 OpenClaw agentId 一致
+    return agent_id
 
 
 # 状态机：合法的状态转移
@@ -99,6 +108,16 @@ def create_sub_task(
     db.add(sub_task)
     db.commit()
     db.refresh(sub_task)
+
+    # 如果分配了 Agent，通知其领取任务
+    if assigned_agent:
+        fire_event(Events.TASK_ASSIGNED, _resolve_executor_agent(assigned_agent), {
+            "sub_task_id": sub_task.id,
+            "sub_task_name": name,
+            "task_id": task_id,
+            "category": category,
+        })
+
     return sub_task
 
 
@@ -193,12 +212,32 @@ def start_sub_task(db: Session, sub_task_id: str, session_id: str = None) -> Sub
 
 def submit_sub_task(db: Session, sub_task_id: str) -> SubTask:
     """提交成果：in_progress → review"""
-    return _change_status(db, sub_task_id, "review")
+    sub_task = _change_status(db, sub_task_id, "review")
+
+    # 通知 Reviewer 进行审查
+    fire_event(Events.TASK_SUBMITTED, "reviewer", {
+        "sub_task_id": sub_task.id,
+        "sub_task_name": sub_task.name,
+        "task_id": sub_task.task_id,
+        "executor_agent": sub_task.assigned_agent,
+    })
+
+    return sub_task
 
 
 def complete_sub_task(db: Session, sub_task_id: str, auto_commit: bool = True) -> SubTask:
     """审查通过：review → done"""
-    return _change_status(db, sub_task_id, "done", auto_commit=auto_commit)
+    sub_task = _change_status(db, sub_task_id, "done", auto_commit=auto_commit)
+
+    # 通知 Planner 任务完成
+    fire_event(Events.TASK_COMPLETED, "planner", {
+        "sub_task_id": sub_task.id,
+        "sub_task_name": sub_task.name,
+        "task_id": sub_task.task_id,
+        "executor_agent": sub_task.assigned_agent,
+    })
+
+    return sub_task
 
 
 def rework_sub_task(db: Session, sub_task_id: str, rework_agent: str = None, auto_commit: bool = True) -> SubTask:

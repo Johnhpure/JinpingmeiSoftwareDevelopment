@@ -1,0 +1,224 @@
+{
+  // ============================================================
+  // OpenClaw 多 Agent 配置模板
+  // 金瓶梅软件作坊 — 基于 OpenClaw 的自组织多 Agent 协作平台
+  //
+  // 使用说明：
+  //   1. 将此文件复制到 ~/.openclaw/openclaw.json
+  //   2. 替换所有 <占位符> 为实际值
+  //   3. 在 BotFather 中创建 5 个 Telegram Bot 并获取 Token
+  //   4. 创建 Telegram Forum Supergroup 并获取 Group ID
+  // ============================================================
+
+  // === Agent 定义 ===
+  "agents": {
+    "defaults": {
+      "sandbox": {
+        "mode": "non-main",
+        "scope": "agent",
+        "workspaceAccess": "none"
+      },
+      "heartbeat": {
+        "every": "30m",
+        "target": "telegram"
+      }
+    },
+    "list": [
+      {
+        "id": "planner",
+        "workspace": "~/.openclaw/workspace-planner",
+        "agentDir": "~/.openclaw/agents/planner/agent",
+        "groupChat": {
+          "mentionPatterns": ["@JpmPlannerBot", "规划师"]
+        }
+      },
+      {
+        "id": "executor-1",
+        "workspace": "~/.openclaw/workspace-executor-1",
+        "agentDir": "~/.openclaw/agents/executor-1/agent",
+        "groupChat": {
+          "mentionPatterns": ["@JpmExecutor1Bot", "执行者"]
+        }
+      },
+      {
+        "id": "executor-2",
+        "workspace": "~/.openclaw/workspace-executor-2",
+        "agentDir": "~/.openclaw/agents/executor-2/agent",
+        "groupChat": {
+          "mentionPatterns": ["@JpmExecutor2Bot"]
+        }
+      },
+      {
+        "id": "reviewer",
+        "workspace": "~/.openclaw/workspace-reviewer",
+        "agentDir": "~/.openclaw/agents/reviewer/agent",
+        "groupChat": {
+          "mentionPatterns": ["@JpmReviewerBot", "审查者"]
+        }
+      },
+      {
+        "id": "patrol",
+        "workspace": "~/.openclaw/workspace-patrol",
+        "agentDir": "~/.openclaw/agents/patrol/agent",
+        "groupChat": {
+          "mentionPatterns": ["@JpmPatrolBot", "巡查"]
+        }
+      }
+    ]
+  },
+
+  // === Telegram Channel 配置 ===
+  // 在 BotFather 创建 5 个 Bot 后，将 Token 填入此处
+  "channels": {
+    "telegram": {
+      "groupPolicy": "allowlist",
+      "accounts": {
+        "planner": {
+          "botToken": "<TELEGRAM_BOT_TOKEN_PLANNER>",
+          "dmPolicy": "pairing",
+          "groups": {
+            "<YOUR_FORUM_GROUP_ID>": {
+              "allow": true,
+              "requireMention": true
+            }
+          }
+        },
+        "executor-1": {
+          "botToken": "<TELEGRAM_BOT_TOKEN_EXECUTOR1>",
+          "dmPolicy": "pairing",
+          "groups": {
+            "<YOUR_FORUM_GROUP_ID>": {
+              "allow": true,
+              "requireMention": true
+            }
+          }
+        },
+        "executor-2": {
+          "botToken": "<TELEGRAM_BOT_TOKEN_EXECUTOR2>",
+          "dmPolicy": "pairing",
+          "groups": {
+            "<YOUR_FORUM_GROUP_ID>": {
+              "allow": true,
+              "requireMention": true
+            }
+          }
+        },
+        "reviewer": {
+          "botToken": "<TELEGRAM_BOT_TOKEN_REVIEWER>",
+          "dmPolicy": "pairing",
+          "groups": {
+            "<YOUR_FORUM_GROUP_ID>": {
+              "allow": true,
+              "requireMention": true
+            }
+          }
+        },
+        "patrol": {
+          "botToken": "<TELEGRAM_BOT_TOKEN_PATROL>",
+          "dmPolicy": "pairing",
+          "groups": {
+            "<YOUR_FORUM_GROUP_ID>": {
+              "allow": true,
+              "requireMention": true
+            }
+          }
+        }
+      }
+    }
+  },
+
+  // === Agent ↔ Telegram Bot 绑定 ===
+  "bindings": [
+    {
+      "agentId": "planner",
+      "match": { "channel": "telegram", "accountId": "planner" }
+    },
+    {
+      "agentId": "executor-1",
+      "match": { "channel": "telegram", "accountId": "executor-1" }
+    },
+    {
+      "agentId": "executor-2",
+      "match": { "channel": "telegram", "accountId": "executor-2" }
+    },
+    {
+      "agentId": "reviewer",
+      "match": { "channel": "telegram", "accountId": "reviewer" }
+    },
+    {
+      "agentId": "patrol",
+      "match": { "channel": "telegram", "accountId": "patrol" }
+    }
+  ],
+
+  // === Agent 间通信配置（核心！） ===
+  // 两道门都必须打开，Agent 间才能通过 sessions_send 通信
+  "tools": {
+    // 第一道门：允许 Agent 互相发消息
+    "agentToAgent": {
+      "enabled": true
+      // 不设 allow 列表 = 所有 Agent 都能互相通信
+      // 如需限制：添加 "allow": ["planner", "executor-1", "reviewer"]
+    },
+    // 第二道门：允许 Agent 看到其他 Agent 的 session
+    "sessions": {
+      "visibility": "all"
+      // 默认 "tree" 只能看自己的 session，跨 Agent 通信必须设 "all"
+    }
+  },
+
+  // === Session 配置 ===
+  "session": {
+    "dmScope": "per-channel-peer",
+    "reset": {
+      "mode": "daily",
+      "atHour": 4
+    }
+  },
+
+  // === Cron 定时任务 ===
+  "cron": {
+    "enabled": true,
+    "maxConcurrentRuns": 2,
+    "sessionRetention": "24h",
+    "jobs": [
+      {
+        "name": "patrol-check",
+        "schedule": "*/30 * * * *",
+        "agentId": "patrol",
+        "sessionMode": "isolated",
+        "message": "执行定期巡查：检查子任务进度、Agent 积分变化、文件系统状态"
+      },
+      {
+        "name": "daily-review",
+        "schedule": "0 9 * * *",
+        "agentId": "planner",
+        "sessionMode": "isolated",
+        "message": "执行晨会回顾：检查昨日未完成任务、当日优先级排序、分配新任务"
+      }
+    ]
+  },
+
+  // === Webhook 配置 ===
+  // FastAPI 后端通过此端点事件驱动唤醒 Agent
+  "hooks": {
+    "enabled": true,
+    "token": "<WEBHOOK_SECRET_TOKEN>",
+    "path": "/hooks",
+    "defaultSessionKey": "hook:ingress",
+    "mappings": [
+      {
+        "match": { "path": "task-event" },
+        "action": "agent",
+        "agentId": "planner",
+        "deliver": true
+      },
+      {
+        "match": { "path": "review-event" },
+        "action": "agent",
+        "agentId": "reviewer",
+        "deliver": true
+      }
+    ]
+  }
+}

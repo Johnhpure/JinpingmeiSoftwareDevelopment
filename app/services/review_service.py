@@ -9,6 +9,7 @@ from app.models.sub_task import SubTask
 from app.models.agent import Agent
 from app.services import sub_task_service
 from app.services import reward_service
+from app.services.webhook_notify import fire_event, Events
 
 
 def create_review(
@@ -89,6 +90,25 @@ def create_review(
         # 4. 统一提交 — 全部成功才 commit
         db.commit()
         db.refresh(record)
+
+        # 5. 触发 OpenClaw 事件通知
+        if result == "approved":
+            fire_event(Events.REVIEW_APPROVED, "planner", {
+                "sub_task_id": sub_task_id,
+                "score": score,
+                "reviewer": reviewer_agent,
+                "executor": executor_agent_id,
+            })
+        else:
+            # 驳回 → 通知执行者返工
+            target = rework_agent or executor_agent_id
+            if target:
+                fire_event(Events.REVIEW_REJECTED, target, {
+                    "sub_task_id": sub_task_id,
+                    "score": score,
+                    "issues": issues,
+                    "reviewer": reviewer_agent,
+                })
     except Exception:
         db.rollback()
         raise

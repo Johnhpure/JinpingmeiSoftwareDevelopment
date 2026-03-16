@@ -52,6 +52,12 @@ webui:
   public_feed: false # 活动流展示页公开开关（true=任何人可访问）
   feed_retention_days: 7 # 请求日志保留天数（超期自动清理）
 
+# OpenClaw Gateway 集成（Agent 间事件驱动通知）
+openclaw:
+  gateway_url: ""  # OpenClaw Gateway 地址（如 http://localhost:4160）
+  webhook_token: "" # Webhook 认证令牌（需与 openclaw.json 中 hooks.token 一致）
+  webhook_enabled: false # 启用后，子任务状态变化会自动通知对应 Agent
+
 # 初始化标记（由 Setup Wizard 自动设置，请勿手动修改）
 setup:
   initialized: false
